@@ -27,7 +27,7 @@ def proxy(path):
     post_redirect = request.headers.get("postRedirect") or request.headers.get("postredirect")
 
     # Health check pour uptime monitors
-    if not post_url and request.method == "GET" and path == "":
+    if not post_url and request.method in ("GET", "HEAD") and path == "":
         return Response("OK", status=200, content_type="text/plain")
 
     if not post_url:
