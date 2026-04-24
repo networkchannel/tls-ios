@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+import os
 import queue
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -292,10 +293,9 @@ class CurlCffiRelay:
 
 async def run(port: int, workers: int, pool_size: int):
     opts = options.Options(
-        listen_host="127.0.0.1",
+        listen_host="0.0.0.0",
         listen_port=port,
         ssl_insecure=False,
-        connection_strategy="eager",
     )
     master = DumpMaster(opts, with_termlog=True, with_dumper=False)
     relay = CurlCffiRelay(pool_size=pool_size, workers=workers)
@@ -317,7 +317,7 @@ async def run(port: int, workers: int, pool_size: int):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--port", type=int, default=8080)
+    ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8080)))
     ap.add_argument("--workers", type=int, default=128)
     ap.add_argument("--pool", type=int, default=128)
     ap.add_argument("--log", default="INFO")
